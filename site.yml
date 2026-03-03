@@ -1,0 +1,6 @@
+---
+- import_playbook: playbooks/hardening.yml
+- import_playbook: playbooks/ufw.yml
+- import_playbook: playbooks/nfs-server.yml
+- import_playbook: playbooks/nfs-client.yml
+- import_playbook: playbooks/webserver.yml

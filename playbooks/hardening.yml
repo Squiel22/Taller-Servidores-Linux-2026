@@ -1,0 +1,51 @@
+---
+- hosts: nfs_servers,app_clients
+  become: true
+
+  tasks:
+    - name: Actualizar todos los paquetes en CentOS
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+      when: ansible_os_family == "RedHat"
+      notify: Reiniciar servidores remotos
+
+    - name: Actualizar todos los paquetes en Ubuntu
+      ansible.builtin.apt:
+        name: "*"
+        state: latest
+        update_cache: true
+      when: ansible_os_family == "Debian"
+      notify: Reiniciar servidores remotos
+      
+    - name: Deshabilitar login root por SSH en Ubuntu
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        insertafter: '^#PermitRootLogin'
+        line: "PermitRootLogin no"
+      when: ansible_os_family == "Debian"
+      notify: Reiniciar SSH Ubuntu
+
+    - name: Deshabilitar login root por SSH en CentOS
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        insertafter: '^#PermitRootLogin'
+        line: "PermitRootLogin no"
+      when: ansible_os_family == "RedHat"
+      notify: Reiniciar SSH CentOS
+
+  
+  handlers:
+  - name: Reiniciar servidores remotos
+    ansible.builtin.reboot:
+    when: ansible_connection != "local"
+    
+  - name: Reiniciar SSH Ubuntu
+    ansible.builtin.systemd_service:
+      name: ssh
+      state: restarted
+
+  - name: Reiniciar SSH CentOS
+    ansible.builtin.systemd_service:
+      name: sshd
+      state: restarted

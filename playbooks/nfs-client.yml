@@ -1,0 +1,44 @@
+---
+- hosts: app_clients
+  become: true
+
+  tasks:
+    - name: instalar paquetes necesarios
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+      loop:
+        - autofs
+        - nfs-common
+        - python3
+
+    - name: copiar el archivo de configuración  
+      ansible.builtin.copy:
+        src: ../files/nfs.autofs
+        dest: /etc/auto.master.d/nfs.autofs
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart autofs
+
+    - name: archivo punto de montaje
+      ansible.builtin.copy:
+        src: ../files/auto.nfs
+        dest: /etc/auto.nfs
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart autofs
+
+    - name: servicio autofs iniciado
+      ansible.builtin.systemd_service:
+        name: autofs
+        state: started
+        enabled: true
+
+  handlers:
+    - name: reiniciar autofs
+      ansible.builtin.systemd_service:
+        name: autofs
+        state: restarted

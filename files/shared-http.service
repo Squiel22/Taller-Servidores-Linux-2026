@@ -1,0 +1,15 @@
+[Unit]
+Description=Python HTTP Server for NFS Share
+After=network.target autofs.service
+Requires=autofs.service
+
+[Service]
+Type=simple
+User=obligatorio
+WorkingDirectory=/mnt/shared
+ExecStart=/usr/bin/python3 -m http.server 8080 --directory /mnt/shared
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

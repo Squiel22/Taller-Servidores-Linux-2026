@@ -1,0 +1,49 @@
+---
+- hosts: nfs_servers
+  become: true
+
+  tasks:
+    - name: Instalar nfs server
+      ansible.builtin.dnf:
+        name: nfs-utils
+        state: present
+
+    - name: Crear directorio compartido
+      ansible.builtin.file:
+        path: /srv/nfs/shared
+        state: directory
+        owner: nobody
+        mode: "0777"
+
+    - name: Exportar directorio compartido
+      ansible.builtin.lineinfile:
+        path: /etc/exports
+        line: "/srv/nfs/shared 192.168.10.0/24(rw)"
+        state: present
+
+    - name: Iniciar y habilitar servicio NFS
+      ansible.builtin.systemd_service:
+        name: nfs-server
+        state: started
+        enabled: true
+
+    - name: Habilitar servicios NFS en firewalld
+      ansible.posix.firewalld:
+        service: "{{ item }}"
+        state: enabled
+        permanent: true
+        immediate: true
+      loop:
+        - nfs
+        - mountd
+        - rpc-bind
+
+    - name: Crear README-NFS.txt en el share
+      ansible.builtin.copy:
+        dest: /srv/nfs/shared/README-NFS.txt
+        content: |
+          README-NFS.txt
+          Export: /srv/nfs/shared
+        owner: root
+        group: root
+        mode: "0644"

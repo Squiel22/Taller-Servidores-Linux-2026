@@ -1,0 +1,34 @@
+---
+- hosts: app_clients
+  become: true
+
+  tasks:
+    - name: Copiar archivo shared-http.service
+      ansible.builtin.copy:
+        src: ../files/shared-http.service
+        dest: /etc/systemd/system/shared-http.service
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reiniciar servicio web
+
+    - name: Iniciar y habilitar servicio shared-http
+      ansible.builtin.systemd_service:
+        name: shared-http
+        state: started
+        daemon-reload: true
+        enabled: true
+
+    - name: Abrir puerto 8080 en UFW
+      community.general.ufw:
+        rule: allow
+        port: "8080"
+        proto: tcp
+
+  handlers:
+    - name: Reiniciar servicio web
+      ansible.builtin.systemd_service:
+        name: shared-http
+        state: restarted
+        daemon-reload: true
+        enabled: true

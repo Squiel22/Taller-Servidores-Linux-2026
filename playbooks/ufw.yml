@@ -1,0 +1,33 @@
+---
+- hosts: app_clients
+  become: yes
+
+  tasks:
+    - name: Instalar ufw
+      ansible.builtin.apt:
+        name: ufw
+        state: present
+        update_cache: true
+    
+    - name: reiniciar ufw
+      community.general.ufw:
+        state: reset
+      
+    - name: permitir trafico saliente
+      community.general.ufw:
+        policy: allow
+        direction: outgoing
+
+    - name: denegar trafico entrante
+      community.general.ufw:
+        policy: deny
+        direction: incoming
+
+    - name: habilitar ssh
+      community.general.ufw:
+        rule: allow
+        name: OpenSSH
+
+    - name: habilitar firewall
+      community.general.ufw:
+        state: enabled
