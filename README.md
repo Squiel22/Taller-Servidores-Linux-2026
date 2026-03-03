@@ -14,6 +14,7 @@ Red utilizada:
 
 VM's
 nfs01	CentOS Stream 9	192.168.10.100	Servidor NFS
+
 app01	Ubuntu Server	192.168.10.101	Cliente NFS + Webserver
 
 
