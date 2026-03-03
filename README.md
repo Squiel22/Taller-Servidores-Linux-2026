@@ -105,7 +105,9 @@ Evidencias de funcionamiento:
 
 <img width="1153" height="205" alt="image" src="https://github.com/user-attachments/assets/2bc3a96d-aed3-446f-b297-17c986517bd9" />
 
+
 <img width="968" height="110" alt="image" src="https://github.com/user-attachments/assets/3a5944d9-94eb-42ee-b0e3-eb7cd9f61488" />
+
 
 <img width="866" height="946" alt="image" src="https://github.com/user-attachments/assets/4d6a3e4a-4239-4bab-85a2-53bfbcea3793" />
 
