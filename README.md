@@ -55,5 +55,54 @@ Cómo ejecutar:
 
 ansible-playbook -i inventory/hosts.ini site.yml --ask-become-pass (es necesario agregar --ask-become-pass al final ya que Ansible ejecutará en sudo y nos solicitará la contraseña, esto debido a que en los Playbooks tenemos become: true)
 
+Verificación en nfs server (nfs01):
+
+1 . Verificar que el servicio NFS esté activo
+
+systemctl is-active nfs-server
+
+2 . Verificar exportaciones configuradas
+
+exportfs -v
+
+3 . Verificar firewall
+
+firewall-cmd --list-services | egrep 'nfs|mountd|rpc-bind'
+
+4️ . Verificar archivo compartido
+
+ls -l /srv/nfs/shared/README-NFS.txt
+
+Verificación en el cliente (app01)
+
+1 . Verificar servicio autofs
+
+systemctl is-active autofs
+
+2️ . Antes de acceder al recurso (no debería estar montado)
+
+mount | grep /mnt/shared
+
+3 . Forzar el automontaje
+
+ls /mnt/shared
+
+4 . Verificar que el recurso esté montado
+
+mount | grep /mnt/shared
+
+Verificación en el webserver (app01)
+
+1️ .  Verificar servicio http activo
+
+systemctl is-active shared-http
+
+2️ . Probar acceso web
+
+curl http://localhost:8080/README-NFS.txt
+
+Evidencias de funcionamiento:
+
+<img width="1153" height="205" alt="image" src="https://github.com/user-attachments/assets/2bc3a96d-aed3-446f-b297-17c986517bd9" />
 
 
