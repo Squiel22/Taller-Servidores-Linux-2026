@@ -116,3 +116,10 @@ Webserver
 <img width="866" height="946" alt="image" src="https://github.com/user-attachments/assets/4d6a3e4a-4239-4bab-85a2-53bfbcea3793" />
 
 
+
+
+REFERENCIAS: 
+
+https://github.com/emverdes/TallerFebrero2026/tree/main
+
+https://docs.ansible.com/
